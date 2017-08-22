@@ -66,7 +66,7 @@ function myTweets() {
     });
 
     var params = {
-        screen_name: "DavidBlight1",
+        screen_name: "@DavidBlight1",
         count: 20
     };
 
@@ -85,12 +85,13 @@ function myTweets() {
 }; 
 // end Twitter
 
-
 // Getting song from Spotify
 function spotifyThisSong() {
     spotify.search({
+        // client_id: '9453cc56401f4c7eb1c39a888f4e6a94',
+        // client_secret: 'd82a9b41c72743c7800ea04e7a065944',
         type: "track",
-        query: "value",
+        query: value,
     }, function(err, data) {
         if (err) {
             console.log("Error occurred: " + err);
@@ -106,53 +107,46 @@ function spotifyThisSong() {
             console.log("Album: The Sign");
             console.log("============");
         } else {
-            for (i = 0; i < 5; i++) {
-                var results = data.tracks.items[i];
-                var artist = results.artists[0].name;
-                var songName = results.name;
-                var previewLink = results.external_urls.spotify;
-                var album = results.album.name;
-
                 //Need: artist(s), song's name, preview link of song, album
+                console.log(data)
                 console.log("============");
-                console.log("Artist: " + artist);
-                console.log("Song: " + songName);
-                console.log("Preview Link: " + previewLink);
-                console.log("Album: " + album);
+                console.log("Artist: " + data.tracks.items[0].artists[0].name);
+                console.log("Song: " + data.tracks.items[0].name);
+                console.log("Preview Link: " + data.tracks.items[0].preview_url);
+                console.log("Album: " + data.tracks.items[0].album.name);
                 console.log("============");
+
             };
-        };
+        
     });
 };
 // end Spotify
 
 // Getting movie
-function movieThis() {
-    var queryURL = "http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece";
-    request(queryURL, function(error, response, body) {
-        // If the request is successful (i.e. if the response status code is 200)
-        if (error) {
-            console.log("Error occurred: " + error);
-            return;
-        };
+function movieData(){
+	console.log("Movie Search");
 
-        if (value === "") {
-            console.log("============");
-            console.log("Movie Name: Mr.Nobody");
-            console.log("Release Date: 2009-09-11");
-            console.log("Synopsis: Mr. Nobody leads an ordinary existence");
-            console.log("Average Vote: 8");
-            console.log("Language: en");
-            console.log("============");
-        } else {
-            console.log("============");
-            console.log("Movie Name: " + JSON.parse(body).results[0].title);
-            console.log("Release Date: " + JSON.parse(body).results[0].release_date);
-            console.log("Synopsis: " + JSON.parse(body).results[0].overview);
-            console.log("Average Vote: " + JSON.parse(body).results[0].vote_average);
-            console.log("Language: " + JSON.parse(body).results[0].original_language);
-            console.log("============");
-        };
+	//same as above, test if search term entered
+	var searchMovie;
+	if(secondCommand === undefined){
+		searchMovie = "Mr. Nobody";
+	}else{
+		searchMovie = secondCommand;
+	};
+
+	var url = 'http://www.omdbapi.com/?t=' + searchMovie +'&y=&plot=short&tomatoes=true&r=json&apikey=40e9cece';
+   	request(url, function(error, response, body){
+	    if(!error && response.statusCode == 200){
+	        console.log("Title: " + JSON.parse(body)["Title"]);
+	        console.log("Year: " + JSON.parse(body)["Year"]);
+	        console.log("IMDB Rating: " + JSON.parse(body)["imdbRating"]);
+	        console.log("Country: " + JSON.parse(body)["Country"]);
+	        console.log("Language: " + JSON.parse(body)["Language"]);
+	        console.log("Plot: " + JSON.parse(body)["Plot"]);
+	        console.log("Actors: " + JSON.parse(body)["Actors"]);
+	        console.log("Rotten Tomatoes Rating: " + JSON.parse(body)["tomatoRating"]);
+	        console.log("Rotten Tomatoes URL: " + JSON.parse(body)["tomatoURL"]);
+	    }
     });
 };
 // end OMDB
